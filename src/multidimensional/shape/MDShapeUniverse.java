@@ -5,7 +5,9 @@
 package multidimensional.shape;
 
 import multidimensional.datatype.CMDList;
+import multidimensional.datatype.CMDObservableList;
 import multidimensional.datatype.ICMDList;
+import multidimensional.datatype.ICMDObservableList;
 import multidimensional.datatype.IMDList;
 import multidimensional.datatype.IMDStack;
 import multidimensional.datatype.MDStack;
@@ -21,7 +23,7 @@ public class MDShapeUniverse implements IMDShapeUniverse {
 
     int dimension;
     IMDShape root;
-    ICMDList<IMDCamera> cameras = new CMDList<>();
+    ICMDObservableList<IMDCamera> cameras = new CMDObservableList<>();
     protected ICMDList<IMDCameraElem> cameraElems = new CMDList<IMDCameraElem>();
 
     public MDShapeUniverse(int dimension) {
@@ -42,7 +44,7 @@ public class MDShapeUniverse implements IMDShapeUniverse {
     }
 
     @Override
-    public ICMDList<IMDCamera> getCameras() {
+    public ICMDObservableList<IMDCamera> getCameras() {
         return cameras;
     }
 

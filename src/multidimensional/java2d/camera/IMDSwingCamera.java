@@ -13,5 +13,7 @@ import multidimensional.shape.IMDCamera;
  */
 public interface IMDSwingCamera extends IMDCamera{
 
+    void setCenterX(int center);
+    void setCenterY(int center);
     Component getComponent();
 }

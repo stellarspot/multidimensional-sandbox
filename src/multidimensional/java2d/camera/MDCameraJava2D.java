@@ -7,6 +7,8 @@ package multidimensional.java2d.camera;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import multidimensional.datatype.CMDList;
@@ -15,6 +17,8 @@ import multidimensional.datatype.IMDList;
 import multidimensional.mathematics.IMDTransform;
 import multidimensional.mathematics.IMDVector;
 import multidimensional.shape.IMDCameraElem;
+import multidimensional.shape.IMDCameraListener;
+import multidimensional.shape.IMDCameraListener.ScreenEvent;
 
 /**
  *
@@ -24,8 +28,24 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
     IMDList<IMDCameraElem> elems;
     ICMDList<IMDTransform> transforms = new CMDList<>();
+    ICMDList<IMDCameraListener> listeners = new CMDList<>();
     private CameraCanvas canvas = new CameraCanvas();
     private volatile boolean isPainted = false;
+    private int centerX;
+    private int centerY;
+
+    public void setCenterX(int centerX) {
+        this.centerX = centerX;
+    }
+
+    public void setCenterY(int centerY) {
+        this.centerY = centerY;
+    }
+
+    @Override
+    public void addListener(IMDCameraListener listener) {
+        listeners.addTail(listener);
+    }
 
     @Override
     public void draw(final IMDList<IMDCameraElem> elems) {
@@ -53,6 +73,25 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
     class CameraCanvas extends JComponent {
 
+        public CameraCanvas() {
+
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    System.out.println("mouse pressed: " + e.getPoint());
+
+                    double x = e.getX() - centerX;
+                    double y = e.getY() - centerY;
+
+
+                    ScreenEvent event = new ScreenEvent(x, y);
+                    for (IMDCameraListener listener : listeners) {
+                        listener.screenPress(event);
+                    }
+                }
+            });
+        }
+
         @Override
         public void paint(Graphics g) {
 
@@ -65,7 +104,8 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
                 Graphics2D g2 = (Graphics2D) g;
 
-                g2.translate(MDFrameJava2D.WIDTH / 2, MDFrameJava2D.HEIGHT / 2);
+                ////g2.translate(MDFrameJava2D.WIDTH / 2, MDFrameJava2D.HEIGHT / 2);
+                g2.translate(centerX, centerY);
                 g2.scale(1, -1);
 
                 for (IMDCameraElem elem : elems) {

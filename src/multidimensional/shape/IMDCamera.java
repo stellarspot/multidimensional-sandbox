@@ -16,4 +16,6 @@ public interface IMDCamera {
 
     ICMDList<IMDTransform> getTransforms();
     void draw(IMDList<IMDCameraElem> elems);
+
+    void addListener(IMDCameraListener listener);
 }

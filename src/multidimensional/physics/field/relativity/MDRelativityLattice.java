@@ -183,7 +183,7 @@ public class MDRelativityLattice {
 
                     vertices.addTail(new ShapeVertex(1.0, n), new ShapeVertex(2.0, n + 1));
 
-                    //segments.addTail(new ShapeSegment(n, n + 1));
+                    segments.addTail(new ShapeSegment(n, n + 1));
 
                     n += 2;
                 }

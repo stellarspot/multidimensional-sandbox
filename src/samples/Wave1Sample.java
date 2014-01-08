@@ -21,14 +21,18 @@ public class Wave1Sample {
             public void run() {
 
 
-                MDWave1Universe universe = new MDWave1Universe();
+                final double length = 10;
+                double mass = 0.1;
+                double k = 0.005;
+                MDWave1Universe universe = new MDWave1Universe(mass, k, length);
 
                 final int n = 3;
-                final double A = 0.9;
+                final double A = 0.4 * length;
+                final double a = 0.8;
                 universe.init(new IMDFunction() {
                     @Override
                     public double getValue(double x) {
-                        return A * Math.sin(2 * Math.PI * n * x);
+                        return A * Math.sin(a * 2 * Math.PI * n * x / length);
                         //return Math.sin(A * 2 * Math.PI * n * x);
                     }
                 });
@@ -36,10 +40,12 @@ public class Wave1Sample {
 //                int steps = 3;
 //                for (int i = 0; i < steps; i++) {
 //                    universe.evaluate();
-//
 //                }
 
                 MDFrameJava2D frameJava2D = new MDFrameJava2D(universe);
+                frameJava2D.setScale(50);
+                frameJava2D.centerCamera(100, MDFrameJava2D.HEIGHT / 2);
+
                 frameJava2D.setVisible(true);
                 frameJava2D.animate();
 

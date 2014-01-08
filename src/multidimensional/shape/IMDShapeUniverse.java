@@ -4,7 +4,7 @@
  */
 package multidimensional.shape;
 
-import multidimensional.datatype.ICMDList;
+import multidimensional.datatype.ICMDObservableList;
 
 /**
  *
@@ -16,7 +16,8 @@ public interface IMDShapeUniverse {
     IMDShape getShape();
     void setShape(IMDShape shape);
 
-    ICMDList<IMDCamera> getCameras();
+    //ICMDList<IMDCamera> getCameras();
+    ICMDObservableList<IMDCamera> getCameras();
 
     void evaluate();
 }
