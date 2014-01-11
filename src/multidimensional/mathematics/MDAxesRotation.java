@@ -8,7 +8,7 @@ package multidimensional.mathematics;
  *
  * @author stellarspot
  */
-public class MDAxesRotation implements IMDTransform {
+public class MDAxesRotation implements IMDInvertibleTransform {
 
     int n;
     int m;
@@ -41,7 +41,15 @@ public class MDAxesRotation implements IMDTransform {
     }
 
     public IMDVector transform(IMDBaseVector vector) {
+        return transform(cos, sin, n, m, vector);
+    }
 
+    @Override
+    public IMDVector inverse(IMDBaseVector vector) {
+        return transform(cos, -sin, n, m, vector);
+    }
+
+    private static IMDVector transform(double cos, double sin, int n, int m, IMDBaseVector vector) {
         double[] elems = vector.getElemsCopy();
 
         double x1 = elems[n];
@@ -54,10 +62,13 @@ public class MDAxesRotation implements IMDTransform {
         elems[m] = y2;
 
         return new MDVector(elems);
+
     }
+
     public static MDAxesRotation[] getRotations(int dim) {
         return getRotations(dim, 0);
     }
+
     public static MDAxesRotation[] getRotations(int dim, double angle) {
 
         MDAxesRotation[] rotations = new MDAxesRotation[dim * (dim - 1) / 2];

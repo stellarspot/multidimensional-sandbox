@@ -5,11 +5,14 @@
 package multidimensional.physics.wave;
 
 import java.util.Arrays;
+import multidimensional.datatype.CMDList;
+import multidimensional.datatype.ICMDList;
 import multidimensional.datatype.IMDListListener;
 import multidimensional.mathematics.CMDVector;
 import multidimensional.mathematics.IMDFunction;
 import multidimensional.shape.IMDCamera;
 import multidimensional.shape.IMDCameraListener;
+import multidimensional.shape.IMDShapeElem;
 import multidimensional.shape.MDShape;
 import multidimensional.shape.MDShapeElem;
 import multidimensional.shape.MDShapeUniverse;
@@ -22,6 +25,7 @@ public class MDWave1Universe extends MDShapeUniverse {
 
     //IMDFunction initWave;
     int N = 500;
+    //int N = 1000;
     double dx;
     double[] waves;
     double[] wavesPlus;
@@ -30,6 +34,7 @@ public class MDWave1Universe extends MDShapeUniverse {
     double m;
     double k;
     double length;
+    ICMDList<DragPoint> dragPoints = new CMDList<>();
 
     public MDWave1Universe(double mass, double k, double length) {
         super(2);
@@ -63,7 +68,7 @@ public class MDWave1Universe extends MDShapeUniverse {
 //        System.out.println(format("waves      ", waves));
 //        System.out.println(format("waves minus", wavesMinus));
         evaluateWave();
-        setShape(getWaveShape());
+        setShape(getRootShape());
         super.evaluate();
     }
 
@@ -89,6 +94,18 @@ public class MDWave1Universe extends MDShapeUniverse {
         for (int i = 1; i < N - 1; i++) {
             evaluateWave(i);
         }
+
+        for (DragPoint dragPoint : dragPoints) {
+
+            int n = dragPoint.n;
+            if (Math.abs(dragPoint.y - wavesPlus[n]) < 0.1) {
+                dragPoint.connected = true;
+            }
+
+            if (dragPoint.connected) {
+                wavesPlus[n] = dragPoint.y;
+            }
+        }
     }
 
     private void evaluateWave(int i) {
@@ -110,10 +127,10 @@ public class MDWave1Universe extends MDShapeUniverse {
 
     }
 
-//    double getWave(int i) {
-//        //return (i <= 0 || i >= N) ? 0 : waves[i];
-//        return waves[i];
-//    }
+    int getIndex(double x) {
+        return (int) (x / dx);
+    }
+
 //    public IMDFunction getInitWave() {
 //        return initWave;
 //    }
@@ -121,7 +138,7 @@ public class MDWave1Universe extends MDShapeUniverse {
 //    public void setInitWave(IMDFunction initWave) {
 //        this.initWave = initWave;
 //    }
-    MDShape getWaveShape() {
+    MDShape getRootShape() {
 
         MDShape shape = new MDShape();
 
@@ -135,7 +152,12 @@ public class MDWave1Universe extends MDShapeUniverse {
 //        });
 
 
-        shape.getElems().addTail(new WaveShapeElem());
+        ICMDList<IMDShapeElem> shapeElems = shape.getElems();
+        shapeElems.addTail(new WaveShapeElem());
+        for (DragPoint dragPoint : dragPoints) {
+            shapeElems.addTail(dragPoint.getShape());
+        }
+
 
         return shape;
     }
@@ -176,6 +198,33 @@ public class MDWave1Universe extends MDShapeUniverse {
         }
     }
 
+    static class DragPoint {
+
+        double x;
+        double y;
+        int n;
+        boolean connected;
+
+        public DragPoint(double x, double y, double dx) {
+            this.n = (int) (x / dx);
+            this.x = x;
+            this.y = y;
+        }
+
+        IMDShapeElem getShape() {
+            return new DragPointShapeElem();
+
+        }
+
+        class DragPointShapeElem extends MDShapeElem {
+
+            public DragPointShapeElem() {
+                init(new CMDVector(x, y));
+                getVertices().addTail(new ShapeVertex(10, 0));
+            }
+        }
+    }
+
     class CameraListener implements IMDCameraListener {
 
         @Override
@@ -183,7 +232,45 @@ public class MDWave1Universe extends MDShapeUniverse {
             double x = e.getX();
             double y = e.getY();
 
+            int n = getIndex(x);
+
+            boolean found = false;
+            for (DragPoint dragPoint : dragPoints) {
+                if (dragPoint.n == n) {
+                    dragPoint.x = x;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                dragPoints.clear();
+                dragPoints.addTail(new DragPoint(x, y, dx));
+            }
+
             System.out.println("camera press x: " + x + ", y: " + y);
+        }
+
+        @Override
+        public void drag(ScreenEvent e) {
+            double x = e.getX();
+            double y = e.getY();
+
+//            dragPoints.clear();
+//            dragPoints.addTail(new DragPoint(x, y));
+            int n = getIndex(x);
+
+            for (DragPoint dragPoint : dragPoints) {
+//                if (dragPoint.n == n) {
+//                    //dragPoint.x = x;
+//                    dragPoint.y = y;
+//                    break;
+//                }
+                dragPoint.y = y;
+                break;
+            }
+
+            //System.out.println("camera drag x: " + x + ", y: " + y);
         }
     }
 

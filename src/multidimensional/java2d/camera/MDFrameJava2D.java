@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import multidimensional.mathematics.IMDBaseVector;
+import multidimensional.mathematics.IMDInvertibleTransform;
 import multidimensional.mathematics.IMDTransform;
 import multidimensional.mathematics.IMDVector;
 import multidimensional.mathematics.MDAxesRotation;
@@ -77,12 +78,12 @@ public class MDFrameJava2D extends JFrame {
         //animate();
     }
 
-    public void centerCamera(int centerX, int centerY){
+    public void centerCamera(int centerX, int centerY) {
         camera.setCenterX(centerX);
         camera.setCenterY(centerY);
     }
 
-    public void addCameraTransforms(IMDTransform... transforms) {
+    public void addCameraTransforms(IMDInvertibleTransform... transforms) {
         for (IMDCamera camera : universe.getCameras()) {
             camera.getTransforms().addTail(transforms);
         }
@@ -141,7 +142,7 @@ public class MDFrameJava2D extends JFrame {
         }).start();
     }
 
-    static class MDTransformScale implements IMDTransform {
+    static class MDTransformScale implements IMDInvertibleTransform {
 
         double scale = 1;
 
@@ -152,6 +153,11 @@ public class MDFrameJava2D extends JFrame {
         @Override
         public IMDVector transform(IMDBaseVector vector) {
             return vector.mul(scale);
+        }
+
+        @Override
+        public IMDVector inverse(IMDBaseVector vector) {
+            return vector.mul(1.0 / scale);
         }
     }
 }

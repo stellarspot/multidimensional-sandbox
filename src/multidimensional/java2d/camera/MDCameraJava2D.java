@@ -14,8 +14,10 @@ import javax.swing.SwingUtilities;
 import multidimensional.datatype.CMDList;
 import multidimensional.datatype.ICMDList;
 import multidimensional.datatype.IMDList;
+import multidimensional.mathematics.IMDInvertibleTransform;
 import multidimensional.mathematics.IMDTransform;
 import multidimensional.mathematics.IMDVector;
+import multidimensional.mathematics.MDVector;
 import multidimensional.shape.IMDCameraElem;
 import multidimensional.shape.IMDCameraListener;
 import multidimensional.shape.IMDCameraListener.ScreenEvent;
@@ -27,7 +29,7 @@ import multidimensional.shape.IMDCameraListener.ScreenEvent;
 public class MDCameraJava2D implements IMDSwingCamera {
 
     IMDList<IMDCameraElem> elems;
-    ICMDList<IMDTransform> transforms = new CMDList<>();
+    ICMDList<IMDInvertibleTransform> transforms = new CMDList<>();
     ICMDList<IMDCameraListener> listeners = new CMDList<>();
     private CameraCanvas canvas = new CameraCanvas();
     private volatile boolean isPainted = false;
@@ -62,7 +64,7 @@ public class MDCameraJava2D implements IMDSwingCamera {
     }
 
     @Override
-    public ICMDList<IMDTransform> getTransforms() {
+    public ICMDList<IMDInvertibleTransform> getTransforms() {
         return transforms;
     }
 
@@ -75,21 +77,10 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
         public CameraCanvas() {
 
-            addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    System.out.println("mouse pressed: " + e.getPoint());
-
-                    double x = e.getX() - centerX;
-                    double y = e.getY() - centerY;
-
-
-                    ScreenEvent event = new ScreenEvent(x, y);
-                    for (IMDCameraListener listener : listeners) {
-                        listener.screenPress(event);
-                    }
-                }
-            });
+            MouseAdapter mouseAdapter = new CameraMouseListener();
+            
+            addMouseListener(mouseAdapter);
+            addMouseMotionListener(mouseAdapter);
         }
 
         @Override
@@ -169,5 +160,47 @@ public class MDCameraJava2D implements IMDSwingCamera {
         }
 
         return index < v.getDim() ? (int) v.getElem(index) : 0;
+    }
+
+    class CameraMouseListener extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+            ScreenEvent event = getEvent(e);
+
+            for (IMDCameraListener listener : listeners) {
+                listener.screenPress(event);
+            }
+        }
+
+//        @Override
+//        public void mouseMoved(MouseEvent e) {
+//            System.out.println("Mouse moved!");
+//        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            //System.out.println("Mouse Dragged!");
+            ScreenEvent event = getEvent(e);
+
+            for (IMDCameraListener listener : listeners) {
+                listener.drag(event);
+            }
+        }
+
+        ScreenEvent getEvent(MouseEvent e) {
+            double x = e.getX() - centerX;
+            double y = e.getY() - centerY;
+
+            IMDVector v = new MDVector(x, -y);
+            //System.out.println("transforms: " + transforms.getSize());
+            for (IMDInvertibleTransform t : transforms) {
+                //System.out.println("v: " + v);
+                v = t.inverse(v);
+            }
+
+            return new ScreenEvent(v.getElem(0), v.getElem(1));
+        }
     }
 }

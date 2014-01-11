@@ -6,7 +6,7 @@ package multidimensional.shape;
 
 import multidimensional.datatype.ICMDList;
 import multidimensional.datatype.IMDList;
-import multidimensional.mathematics.IMDTransform;
+import multidimensional.mathematics.IMDInvertibleTransform;
 
 /**
  *
@@ -14,7 +14,7 @@ import multidimensional.mathematics.IMDTransform;
  */
 public interface IMDCamera {
 
-    ICMDList<IMDTransform> getTransforms();
+    ICMDList<IMDInvertibleTransform> getTransforms();
     void draw(IMDList<IMDCameraElem> elems);
 
     void addListener(IMDCameraListener listener);

@@ -20,7 +20,6 @@ public class Wave1Sample {
             @Override
             public void run() {
 
-
                 final double length = 10;
                 double mass = 0.1;
                 double k = 0.005;
