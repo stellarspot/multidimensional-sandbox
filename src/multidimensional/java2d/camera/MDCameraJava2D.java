@@ -78,7 +78,7 @@ public class MDCameraJava2D implements IMDSwingCamera {
         public CameraCanvas() {
 
             MouseAdapter mouseAdapter = new CameraMouseListener();
-            
+
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
         }
@@ -174,18 +174,26 @@ public class MDCameraJava2D implements IMDSwingCamera {
             }
         }
 
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            ScreenEvent event = getEvent(e);
+
+            for (IMDCameraListener listener : listeners) {
+                listener.screenRelease(event);
+            }
+        }
+
 //        @Override
 //        public void mouseMoved(MouseEvent e) {
 //            System.out.println("Mouse moved!");
 //        }
-
         @Override
         public void mouseDragged(MouseEvent e) {
             //System.out.println("Mouse Dragged!");
             ScreenEvent event = getEvent(e);
 
             for (IMDCameraListener listener : listeners) {
-                listener.drag(event);
+                listener.screenDrag(event);
             }
         }
 

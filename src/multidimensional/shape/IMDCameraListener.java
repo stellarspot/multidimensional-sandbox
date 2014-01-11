@@ -11,7 +11,8 @@ package multidimensional.shape;
 public interface IMDCameraListener {
 
     void screenPress(ScreenEvent e);
-    void drag(ScreenEvent e);
+    void screenRelease(ScreenEvent e);
+    void screenDrag(ScreenEvent e);
 
     class ScreenEvent {
 
