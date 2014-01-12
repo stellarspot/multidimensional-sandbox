@@ -4,6 +4,7 @@
  */
 package multidimensional.java2d.camera;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,6 +15,7 @@ import javax.swing.SwingUtilities;
 import multidimensional.datatype.CMDList;
 import multidimensional.datatype.ICMDList;
 import multidimensional.datatype.IMDList;
+import multidimensional.datatype.IMDProperties;
 import multidimensional.mathematics.IMDInvertibleTransform;
 import multidimensional.mathematics.IMDTransform;
 import multidimensional.mathematics.IMDVector;
@@ -21,6 +23,8 @@ import multidimensional.mathematics.MDVector;
 import multidimensional.shape.IMDCameraElem;
 import multidimensional.shape.IMDCameraListener;
 import multidimensional.shape.IMDCameraListener.ScreenEvent;
+import multidimensional.shape.IMDColor;
+import multidimensional.shape.MDShapeProperties;
 
 /**
  *
@@ -130,7 +134,8 @@ public class MDCameraJava2D implements IMDSwingCamera {
             int x = getCoordinats(0, v);
             int y = getCoordinats(1, v);
 
-            //g.drawOval(x - r, y - r, r2, r2);
+            Color color = getColor(vertex.getProperties());
+            g.setColor(color);
             g.fillOval(x - r, y - r, r2, r2);
 
         }
@@ -151,6 +156,15 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
             g.drawLine(x1, y1, x2, y2);
         }
+    }
+
+    Color getColor(IMDProperties properties) {
+        //IMDColor color = (IMDColor) properties.get(MDShapeProperties.Name.COLOR);
+        return getColor((IMDColor) properties.get(MDShapeProperties.Name.COLOR));
+    }
+
+    Color getColor(IMDColor color) {
+        return color == null ? Color.BLACK : new Color(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     int getCoordinats(int index, IMDVector v) {

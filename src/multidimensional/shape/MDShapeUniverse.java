@@ -9,6 +9,7 @@ import multidimensional.datatype.CMDObservableList;
 import multidimensional.datatype.ICMDList;
 import multidimensional.datatype.ICMDObservableList;
 import multidimensional.datatype.IMDList;
+import multidimensional.datatype.IMDProperties;
 import multidimensional.datatype.IMDStack;
 import multidimensional.datatype.MDStack;
 import multidimensional.mathematics.ICMDVector;
@@ -154,10 +155,12 @@ public class MDShapeUniverse implements IMDShapeUniverse {
 
             double radius;
             int coordinats;
+            IMDProperties properties;
 
             public CameraVertex(IMDShapeElem.Vertex vertex) {
                 this.radius = vertex.getRadius();
                 this.coordinats = vertex.getCoordinats();
+                this.properties = vertex.getProperties();
             }
 
             public double getRadius() {
@@ -167,16 +170,23 @@ public class MDShapeUniverse implements IMDShapeUniverse {
             public int getCoordinats() {
                 return coordinats;
             }
+
+            public IMDProperties getProperties() {
+                return properties;
+            }
+
         }
 
         static class CameraSegment implements IMDCameraElem.Segment {
 
             int vertex1;
             int vertex2;
+            IMDProperties properties;
 
             public CameraSegment(IMDShapeElem.Segment segment) {
                 vertex1 = segment.getVertex1();
                 vertex2 = segment.getVertex2();
+                this.properties = segment.getProperties();
             }
 
             @Override
@@ -187,6 +197,10 @@ public class MDShapeUniverse implements IMDShapeUniverse {
             @Override
             public int getVertex2() {
                 return vertex2;
+            }
+
+            public IMDProperties getProperties() {
+                return properties;
             }
         }
     }

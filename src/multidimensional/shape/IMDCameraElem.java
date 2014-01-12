@@ -5,6 +5,7 @@
 package multidimensional.shape;
 
 import multidimensional.datatype.IMDList;
+import multidimensional.datatype.IMDProperties;
 import multidimensional.mathematics.IMDVector;
 
 /**
@@ -21,13 +22,16 @@ public interface IMDCameraElem {
     public static interface Vertex {
 
         double getRadius();
-        //IMDVector getCoordinats();
         int getCoordinats();
+
+        IMDProperties getProperties();
     }
 
     public static interface Segment {
 
         int getVertex1();
         int getVertex2();
+
+        IMDProperties getProperties();
     }
 }

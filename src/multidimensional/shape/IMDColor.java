@@ -4,15 +4,13 @@
  */
 package multidimensional.shape;
 
-import multidimensional.mathematics.ICMDVector;
-
 /**
  *
  * @author stellarspot
  */
-//public interface IMDShapeVertex {
-//
-//    double getRadius();
-//    ICMDVector getCoordinats();
-//
-//}
+public interface IMDColor {
+    int getRed();
+    int getGreen();
+    int getBlue();
+
+}

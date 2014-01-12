@@ -6,6 +6,7 @@ package multidimensional.shape;
 
 import multidimensional.datatype.CMDList;
 import multidimensional.datatype.ICMDList;
+import multidimensional.datatype.IMDProperties;
 import multidimensional.mathematics.ICMDVector;
 
 /**
@@ -18,13 +19,13 @@ public class MDShapeElem implements IMDShapeElem {
     protected ICMDList<Vertex> vertices;
     protected ICMDList<Segment> segments;
 
-    protected void init(ICMDVector... vectors){
+    protected void init(ICMDVector... vectors) {
         this.vectors = vectors;
         this.vertices = new CMDList<>();
         this.segments = new CMDList<>();
     }
 
-    protected void init(int vectorSize){
+    protected void init(int vectorSize) {
         this.vectors = new ICMDVector[vectorSize];
         this.vertices = new CMDList<>();
         this.segments = new CMDList<>();
@@ -49,8 +50,8 @@ public class MDShapeElem implements IMDShapeElem {
 
         public static final double DEFAULT_RADIUS = 5;
         double radius;
-        //ICMDVector coordinats;
         int coordinats;
+        IMDProperties properties = new MDShapeProperties();
 
         public ShapeVertex(int coordinats) {
             this(DEFAULT_RADIUS, coordinats);
@@ -66,14 +67,14 @@ public class MDShapeElem implements IMDShapeElem {
             return radius;
         }
 
-//        @Override
-//        public ICMDVector getCoordinats() {
-//            return coordinats;
-//        }
-
         @Override
         public int getCoordinats() {
             return coordinats;
+        }
+
+        @Override
+        public IMDProperties getProperties() {
+            return properties;
         }
     }
 
@@ -81,18 +82,26 @@ public class MDShapeElem implements IMDShapeElem {
 
         int vertex1;
         int vertex2;
+        IMDProperties properties = new MDShapeProperties();
 
         public ShapeSegment(int vertex1, int vertex2) {
             this.vertex1 = vertex1;
             this.vertex2 = vertex2;
         }
 
+        @Override
         public int getVertex1() {
             return vertex1;
         }
 
+        @Override
         public int getVertex2() {
             return vertex2;
+        }
+
+        @Override
+        public IMDProperties getProperties() {
+            return properties;
         }
     }
 }

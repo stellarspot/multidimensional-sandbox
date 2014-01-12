@@ -13,8 +13,10 @@ import multidimensional.mathematics.IMDFunction;
 import multidimensional.shape.IMDCamera;
 import multidimensional.shape.IMDCameraListener;
 import multidimensional.shape.IMDShapeElem;
+import multidimensional.shape.MDColor;
 import multidimensional.shape.MDShape;
 import multidimensional.shape.MDShapeElem;
+import multidimensional.shape.MDShapeProperties;
 import multidimensional.shape.MDShapeUniverse;
 
 /**
@@ -175,17 +177,24 @@ public class MDWave1Universe extends MDShapeUniverse {
             init(N + 2);
 
             //double scale = 200;
+            IMDShapeElem.Vertex vertex = null;
 
             for (int i = 0; i < N; i++) {
                 vectors[i] = new CMDVector(i * dx, wavesPlus[i]);
-                vertices.addTail(new MDShapeElem.ShapeVertex(2.0, i));
+                vertex = new MDShapeElem.ShapeVertex(2.0, i);
+                vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.BLUE);
+                vertices.addTail(vertex);
             }
 
             double r = 5;
             vectors[N] = new CMDVector(0, wavesPlus[0]);
-            vertices.addTail(new MDShapeElem.ShapeVertex(r, N));
+            vertex = new MDShapeElem.ShapeVertex(r, N);
+            vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.GREEN);
+            vertices.addTail(vertex);
             vectors[N + 1] = new CMDVector(length, wavesPlus[N - 1]);
-            vertices.addTail(new MDShapeElem.ShapeVertex(r, N + 1));
+            vertex = new MDShapeElem.ShapeVertex(r, N + 1);
+            vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.GREEN);
+            vertices.addTail(vertex);
 
 
 //            double scale = 200;
