@@ -112,7 +112,6 @@ public class MDWave1Universe extends MDShapeUniverse {
             }
 
             dragPoint.evaluate();
-            //dragPoint.allowDrag = true;
         }
     }
 
@@ -124,13 +123,7 @@ public class MDWave1Universe extends MDShapeUniverse {
 
         double xx = (xPlus - 2 * x + xMinus) / (dx * dx);
 
-        //xx = (i == 0 || i == N) ? 0 : xx;
-
         w += (k / m) * xx * (dt * dt);
-        //w = (k / m) * xx;
-
-
-        //wavesPlus[i] = xx;
         wavesPlus[i] = w;
 
     }
@@ -139,76 +132,51 @@ public class MDWave1Universe extends MDShapeUniverse {
         return (int) (x / dx);
     }
 
-//    public IMDFunction getInitWave() {
-//        return initWave;
-//    }
-//
-//    public void setInitWave(IMDFunction initWave) {
-//        this.initWave = initWave;
-//    }
     MDShape getRootShape() {
 
         MDShape shape = new MDShape();
 
-//        final int scale = 20;
-
-//        shape.getTransforms().addTail(new IMDTransform() {
-//            @Override
-//            public IMDVector transform(IMDBaseVector v) {
-//                return v.mul(scale);
-//            }
-//        });
-
-
         ICMDList<IMDShapeElem> shapeElems = shape.getElems();
         shapeElems.addTail(new WaveShapeElem());
+        shapeElems.addTail(new PinsShapeElem());
         for (DragPoint dragPoint : dragPoints) {
             shapeElems.addTail(dragPoint.getShape());
         }
 
-
         return shape;
+    }
+
+    class PinsShapeElem extends MDShapeElem {
+
+        public PinsShapeElem() {
+            init(2);
+            double r = 5;
+            properties.put(MDShapeProperties.Name.COLOR, MDColor.DARK_GREEN);
+            vectors[0] = new CMDVector(0, wavesPlus[0]);
+            IMDShapeElem.Vertex vertex = new MDShapeElem.ShapeVertex(r, 0);
+            //vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.DARK_GREEN);
+            vertices.addTail(vertex);
+            vectors[1] = new CMDVector(length, wavesPlus[N - 1]);
+            vertex = new MDShapeElem.ShapeVertex(r, 1);
+            //vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.DARK_GREEN);
+            vertices.addTail(vertex);
+
+        }
     }
 
     class WaveShapeElem extends MDShapeElem {
 
         public WaveShapeElem() {
 
-            init(N + 2);
+            init(N);
 
-            //double scale = 200;
-            IMDShapeElem.Vertex vertex = null;
+            properties.put(MDShapeProperties.Name.COLOR, MDColor.BLUE);
 
             for (int i = 0; i < N; i++) {
                 vectors[i] = new CMDVector(i * dx, wavesPlus[i]);
-                vertex = new MDShapeElem.ShapeVertex(2.0, i);
-                vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.BLUE);
-                vertices.addTail(vertex);
+                IMDShapeElem.Vertex vertex = new MDShapeElem.ShapeVertex(2.0, i);
+                vertices.addTail(new MDShapeElem.ShapeVertex(2.0, i));
             }
-
-            double r = 5;
-            vectors[N] = new CMDVector(0, wavesPlus[0]);
-            vertex = new MDShapeElem.ShapeVertex(r, N);
-            vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.GREEN);
-            vertices.addTail(vertex);
-            vectors[N + 1] = new CMDVector(length, wavesPlus[N - 1]);
-            vertex = new MDShapeElem.ShapeVertex(r, N + 1);
-            vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.GREEN);
-            vertices.addTail(vertex);
-
-
-//            double scale = 200;
-//
-//            for (int i = 0; i < N; i++) {
-//                vectors[i] = new CMDVector(2 * scale * (i * dx - 0.5), scale * wavesPlus[i]);
-//                vertices.addTail(new MDShapeElem.ShapeVertex(2.0, i));
-//            }
-//
-//            double r = 5;
-//            vectors[N] = new CMDVector(2 * scale * (0 - 0.5), scale * wavesPlus[0]);
-//            vertices.addTail(new MDShapeElem.ShapeVertex(r, N));
-//            vectors[N + 1] = new CMDVector(2 * scale * ((N - 1) * dx - 0.5), scale * wavesPlus[N - 1]);
-//            vertices.addTail(new MDShapeElem.ShapeVertex(r, N + 1));
 
         }
     }
@@ -239,14 +207,23 @@ public class MDWave1Universe extends MDShapeUniverse {
 
         IMDShapeElem getShape() {
             return new DragPointShapeElem();
-
         }
 
         class DragPointShapeElem extends MDShapeElem {
 
             public DragPointShapeElem() {
-                init(new CMDVector(x, y));
-                getVertices().addTail(new ShapeVertex(10, 0));
+                init(new CMDVector(x, waves[n]), new CMDVector(x, y));
+
+                Vertex waveVertex = new ShapeVertex(10, 0);
+                waveVertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.RED);
+                waveVertex.getProperties().put(MDShapeProperties.Name.FILL, Boolean.FALSE);
+
+                Vertex dragVertex = new ShapeVertex(5, 1);
+                Segment segment = new ShapeSegment(0, 1);
+
+                getVertices().addTail(waveVertex);
+                getVertices().addTail(dragVertex);
+                getSegments().addTail(segment);
             }
         }
     }

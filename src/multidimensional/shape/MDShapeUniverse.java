@@ -151,6 +151,11 @@ public class MDShapeUniverse implements IMDShapeUniverse {
             return cameraSegments;
         }
 
+        @Override
+        public IMDProperties getProperties() {
+            return shapeElem.getProperties().getIMDProperties();
+        }
+        
         static class CameraVertex implements IMDCameraElem.Vertex {
 
             double radius;
@@ -160,7 +165,7 @@ public class MDShapeUniverse implements IMDShapeUniverse {
             public CameraVertex(IMDShapeElem.Vertex vertex) {
                 this.radius = vertex.getRadius();
                 this.coordinats = vertex.getCoordinats();
-                this.properties = vertex.getProperties();
+                this.properties = vertex.getProperties().getIMDProperties();
             }
 
             public double getRadius() {
@@ -186,7 +191,7 @@ public class MDShapeUniverse implements IMDShapeUniverse {
             public CameraSegment(IMDShapeElem.Segment segment) {
                 vertex1 = segment.getVertex1();
                 vertex2 = segment.getVertex2();
-                this.properties = segment.getProperties();
+                this.properties = segment.getProperties().getIMDProperties();
             }
 
             @Override

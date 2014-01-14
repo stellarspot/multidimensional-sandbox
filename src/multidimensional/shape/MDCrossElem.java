@@ -6,7 +6,7 @@ package multidimensional.shape;
 
 import multidimensional.datatype.CMDList;
 import multidimensional.datatype.ICMDList;
-import multidimensional.datatype.IMDProperties;
+import multidimensional.datatype.ICMDProperties;
 import multidimensional.mathematics.CMDVector;
 import multidimensional.mathematics.ICMDVector;
 
@@ -54,7 +54,7 @@ public class MDCrossElem extends MDShapeElem {
     static class ShapeSegment implements Segment {
 
         int vertex;
-        IMDProperties properties = new MDShapeProperties();
+        ICMDProperties properties = new MDShapeProperties();
 
         public ShapeSegment(int vertex) {
             this.vertex = vertex;
@@ -71,7 +71,7 @@ public class MDCrossElem extends MDShapeElem {
         }
 
         @Override
-        public IMDProperties getProperties() {
+        public ICMDProperties getProperties() {
             return properties;
         }
     }

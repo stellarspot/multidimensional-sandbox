@@ -6,7 +6,7 @@ package multidimensional.shape;
 
 import multidimensional.datatype.CMDList;
 import multidimensional.datatype.ICMDList;
-import multidimensional.datatype.IMDProperties;
+import multidimensional.datatype.ICMDProperties;
 import multidimensional.mathematics.ICMDVector;
 
 /**
@@ -18,6 +18,7 @@ public class MDShapeElem implements IMDShapeElem {
     protected ICMDVector[] vectors;
     protected ICMDList<Vertex> vertices;
     protected ICMDList<Segment> segments;
+    protected ICMDProperties properties = new MDShapeProperties();
 
     protected void init(ICMDVector... vectors) {
         this.vectors = vectors;
@@ -46,12 +47,17 @@ public class MDShapeElem implements IMDShapeElem {
         return segments;
     }
 
+    @Override
+    public ICMDProperties getProperties() {
+        return properties;
+    }
+
     public static class ShapeVertex implements Vertex {
 
         public static final double DEFAULT_RADIUS = 5;
         double radius;
         int coordinats;
-        IMDProperties properties = new MDShapeProperties();
+        ICMDProperties properties = new MDShapeProperties();
 
         public ShapeVertex(int coordinats) {
             this(DEFAULT_RADIUS, coordinats);
@@ -73,7 +79,7 @@ public class MDShapeElem implements IMDShapeElem {
         }
 
         @Override
-        public IMDProperties getProperties() {
+        public ICMDProperties getProperties() {
             return properties;
         }
     }
@@ -82,7 +88,7 @@ public class MDShapeElem implements IMDShapeElem {
 
         int vertex1;
         int vertex2;
-        IMDProperties properties = new MDShapeProperties();
+        ICMDProperties properties = new MDShapeProperties();
 
         public ShapeSegment(int vertex1, int vertex2) {
             this.vertex1 = vertex1;
@@ -100,7 +106,7 @@ public class MDShapeElem implements IMDShapeElem {
         }
 
         @Override
-        public IMDProperties getProperties() {
+        public ICMDProperties getProperties() {
             return properties;
         }
     }

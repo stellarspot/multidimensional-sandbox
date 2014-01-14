@@ -116,16 +116,17 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
             IMDVector[] vectors = elem.getVectors();
 
-            for (IMDCameraElem.Vertex vertex : elem.getVertices()) {
-                drawVertex(g, vertex, vectors);
-            }
-
             for (IMDCameraElem.Segment segment : elem.getSegments()) {
                 drawSegment(g, segment, vectors);
             }
+
+            for (IMDCameraElem.Vertex vertex : elem.getVertices()) {
+                drawVertex(g, vertex, vectors, elem.getProperties());
+            }
         }
 
-        void drawVertex(Graphics2D g, IMDCameraElem.Vertex vertex, IMDVector[] vectors) {
+        void drawVertex(Graphics2D g, IMDCameraElem.Vertex vertex,
+                IMDVector[] vectors, IMDProperties properties) {
 
             int r = (int) vertex.getRadius();
             int r2 = r * 2;
@@ -134,9 +135,15 @@ public class MDCameraJava2D implements IMDSwingCamera {
             int x = getCoordinats(0, v);
             int y = getCoordinats(1, v);
 
-            Color color = getColor(vertex.getProperties());
+            Color color = getColor(properties, vertex.getProperties());
+            boolean fill = getFill(properties, vertex.getProperties());
+
             g.setColor(color);
-            g.fillOval(x - r, y - r, r2, r2);
+            if (fill) {
+                g.fillOval(x - r, y - r, r2, r2);
+            } else {
+                g.drawOval(x - r, y - r, r2, r2);
+            }
 
         }
 
@@ -158,13 +165,26 @@ public class MDCameraJava2D implements IMDSwingCamera {
         }
     }
 
-    Color getColor(IMDProperties properties) {
-        //IMDColor color = (IMDColor) properties.get(MDShapeProperties.Name.COLOR);
-        return getColor((IMDColor) properties.get(MDShapeProperties.Name.COLOR));
+    boolean getFill(IMDProperties baseProperties, IMDProperties properties) {
+        Boolean fill = (Boolean) getProperty(MDShapeProperties.Name.FILL,
+                baseProperties, properties);
+        return fill == null ? true : fill;
+    }
+
+    Color getColor(IMDProperties baseProperties, IMDProperties properties) {
+        return getColor((IMDColor) getProperty(MDShapeProperties.Name.COLOR,
+                baseProperties, properties));
     }
 
     Color getColor(IMDColor color) {
         return color == null ? Color.BLACK : new Color(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    Object getProperty(IMDProperties.IMDName name,
+            IMDProperties baseProperties, IMDProperties properties) {
+        Object property = properties.get(name);
+
+        return property == null ? baseProperties.get(name) : property;
     }
 
     int getCoordinats(int index, IMDVector v) {

@@ -18,6 +18,8 @@ public interface IMDCameraElem {
     IMDVector[] getVectors();
     IMDList<Vertex> getVertices();
     IMDList<Segment> getSegments();
+    
+    IMDProperties getProperties();    
 
     public static interface Vertex {
 

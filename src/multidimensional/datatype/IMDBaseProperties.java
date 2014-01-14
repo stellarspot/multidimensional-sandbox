@@ -8,5 +8,11 @@ package multidimensional.datatype;
  *
  * @author Alexander
  */
-public interface IMDProperties extends IMDBaseProperties {
+public interface IMDBaseProperties {
+
+    IMDList<IMDName> getNames();
+    Object get(ICMDProperties.IMDName name);
+
+    interface IMDName {
+    }
 }

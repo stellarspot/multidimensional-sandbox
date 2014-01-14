@@ -10,9 +10,15 @@ package multidimensional.shape;
  */
 public enum MDColor implements IMDColor {
 
+    RED(255, 0, 0),
     GREEN(0, 255, 0),
     BLUE(0, 0, 255),
-    BLACK(0, 0, 0);
+    BLACK(0, 0, 0),
+    
+    DARK_RED(139, 0, 0),
+    DARK_GREEN(0, 100, 0),
+    DARK_BLUE(0, 0, 139),
+    ;
     private int red;
     private int green;
     private int blue;

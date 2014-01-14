@@ -5,7 +5,7 @@
 package multidimensional.shape;
 
 import multidimensional.datatype.ICMDList;
-import multidimensional.datatype.IMDProperties;
+import multidimensional.datatype.ICMDProperties;
 import multidimensional.mathematics.ICMDVector;
 
 /**
@@ -19,12 +19,14 @@ public interface IMDShapeElem {
     ICMDList<Vertex> getVertices();
     ICMDList<Segment> getSegments();
 
+    ICMDProperties getProperties();
+
     interface Vertex {
 
         double getRadius();
         int getCoordinats();
 
-        IMDProperties getProperties();
+        ICMDProperties getProperties();
     }
 
     interface Segment {
@@ -32,6 +34,6 @@ public interface IMDShapeElem {
         int getVertex1();
         int getVertex2();
         
-        IMDProperties getProperties();
+        ICMDProperties getProperties();
     }
 }
