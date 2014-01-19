@@ -8,6 +8,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
@@ -22,7 +25,8 @@ import multidimensional.mathematics.IMDVector;
 import multidimensional.mathematics.MDVector;
 import multidimensional.shape.IMDCameraElem;
 import multidimensional.shape.IMDCameraListener;
-import multidimensional.shape.IMDCameraListener.ScreenEvent;
+import multidimensional.shape.IMDCameraListener.MDKeyEvent;
+import multidimensional.shape.IMDCameraListener.MDScreenEvent;
 import multidimensional.shape.IMDColor;
 import multidimensional.shape.MDShapeProperties;
 
@@ -85,6 +89,8 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
+            
+            addKeyListener(new CameraKeyListener());
         }
 
         @Override
@@ -98,6 +104,14 @@ public class MDCameraJava2D implements IMDSwingCamera {
                 }
 
                 Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // You can also enable antialiasing for text:
+//                g2.setRenderingHint(
+//                        RenderingHints.KEY_TEXT_ANTIALIASING,
+//                        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
                 ////g2.translate(MDFrameJava2D.WIDTH / 2, MDFrameJava2D.HEIGHT / 2);
                 g2.translate(centerX, centerY);
@@ -117,7 +131,7 @@ public class MDCameraJava2D implements IMDSwingCamera {
             IMDVector[] vectors = elem.getVectors();
 
             for (IMDCameraElem.Segment segment : elem.getSegments()) {
-                drawSegment(g, segment, vectors);
+                drawSegment(g, segment, vectors, elem.getProperties());
             }
 
             for (IMDCameraElem.Vertex vertex : elem.getVertices()) {
@@ -147,12 +161,14 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
         }
 
-        void drawSegment(Graphics2D g, IMDCameraElem.Segment segment, IMDVector[] vectors) {
+        void drawSegment(Graphics2D g, IMDCameraElem.Segment segment, IMDVector[] vectors, IMDProperties properties) {
 
             IMDVector v1 = vectors[segment.getVertex1()];
             IMDVector v2 = vectors[segment.getVertex2()];
 
             //System.out.println("segment: " + v1 + ", " + v2);
+            Color color = getColor(properties, segment.getProperties());
+            g.setColor(color);
 
             int x1 = getCoordinats(0, v1);
             int y1 = getCoordinats(1, v1);
@@ -195,13 +211,29 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
         return index < v.getDim() ? (int) v.getElem(index) : 0;
     }
+    
+    class CameraKeyListener extends KeyAdapter{
 
+        @Override
+        public void keyPressed(KeyEvent e) {
+            MDKeyEvent event = getEvent(e);
+
+            for (IMDCameraListener listener : listeners) {
+                listener.keyPress(event);
+            }
+        }
+        
+        MDKeyEvent getEvent(KeyEvent e){
+            return new MDKeyEvent(e.getKeyChar());
+        }
+    }
+    
     class CameraMouseListener extends MouseAdapter {
 
         @Override
         public void mousePressed(MouseEvent e) {
 
-            ScreenEvent event = getEvent(e);
+            MDScreenEvent event = getEvent(e);
 
             for (IMDCameraListener listener : listeners) {
                 listener.screenPress(event);
@@ -210,7 +242,7 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            ScreenEvent event = getEvent(e);
+            MDScreenEvent event = getEvent(e);
 
             for (IMDCameraListener listener : listeners) {
                 listener.screenRelease(event);
@@ -224,14 +256,14 @@ public class MDCameraJava2D implements IMDSwingCamera {
         @Override
         public void mouseDragged(MouseEvent e) {
             //System.out.println("Mouse Dragged!");
-            ScreenEvent event = getEvent(e);
+            MDScreenEvent event = getEvent(e);
 
             for (IMDCameraListener listener : listeners) {
                 listener.screenDrag(event);
             }
         }
 
-        ScreenEvent getEvent(MouseEvent e) {
+        MDScreenEvent getEvent(MouseEvent e) {
             double x = e.getX() - centerX;
             double y = e.getY() - centerY;
 
@@ -242,7 +274,7 @@ public class MDCameraJava2D implements IMDSwingCamera {
                 v = t.inverse(v);
             }
 
-            return new ScreenEvent(v.getElem(0), v.getElem(1));
+            return new MDScreenEvent(0, v.getElem(0), v.getElem(1));
         }
     }
 }

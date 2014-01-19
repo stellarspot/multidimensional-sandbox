@@ -10,18 +10,27 @@ package multidimensional.shape;
  */
 public interface IMDCameraListener {
 
-    void screenPress(ScreenEvent e);
-    void screenRelease(ScreenEvent e);
-    void screenDrag(ScreenEvent e);
+    void screenPress(MDScreenEvent e);
 
-    class ScreenEvent {
+    void screenRelease(MDScreenEvent e);
 
+    void screenDrag(MDScreenEvent e);
+
+    void keyPress(MDKeyEvent e);
+
+    class MDScreenEvent {
+
+        int id;
         double x;
         double y;
 
-        public ScreenEvent(double x, double y) {
+        public MDScreenEvent(int id, double x, double y) {
             this.x = x;
             this.y = y;
+        }
+
+        public int getId() {
+            return id;
         }
 
         public double getX() {
@@ -30,6 +39,19 @@ public interface IMDCameraListener {
 
         public double getY() {
             return y;
+        }
+    }
+
+    class MDKeyEvent {
+
+        char keyChar;
+
+        public MDKeyEvent(char c) {
+            this.keyChar = c;
+        }
+
+        public char getChar() {
+            return keyChar;
         }
     }
 }
