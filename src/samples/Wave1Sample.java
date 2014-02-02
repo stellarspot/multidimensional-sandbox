@@ -28,29 +28,29 @@ public class Wave1Sample {
                 final int n = 3;
                 final double A = 0.4 * length;
                 final double a = 0.8;
-//                universe.init(new IMDFunction() {
-//                    @Override
-//                    public double getValue(double x) {
-//                        return A * Math.sin(a * 2 * Math.PI * n * x / length);
-//                        //return Math.sin(A * 2 * Math.PI * n * x);
-//                    }
-//                });
-
-//                universe.setInitFunction(new IMDFunction() {
-//                    @Override
-//                    public double getValue(double x) {
-//                        return 0;
-//                        //return Math.sin(A * 2 * Math.PI * n * x);
-//                    }
-//                });
+                universe.setInitFunction(new IMDFunction() {
+                    @Override
+                    public double getValue(double x) {
+                        return A * Math.sin(a * 2 * Math.PI * n * x / length);
+                        //return Math.sin(A * 2 * Math.PI * n * x);
+                    }
+                });
 
                 universe.setInitFunction(new IMDFunction() {
                     @Override
                     public double getValue(double x) {
-                        return -0.1 * x * (x-length);
+                        return 0;
                         //return Math.sin(A * 2 * Math.PI * n * x);
                     }
                 });
+
+//                universe.setInitFunction(new IMDFunction() {
+//                    @Override
+//                    public double getValue(double x) {
+//                        return -0.1 * x * (x-length);
+//                        //return Math.sin(A * 2 * Math.PI * n * x);
+//                    }
+//                });
 
                 MDFrameJava2D frameJava2D = new MDFrameJava2D(universe);
                 frameJava2D.setScale(50);

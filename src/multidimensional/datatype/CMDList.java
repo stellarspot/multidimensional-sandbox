@@ -86,6 +86,7 @@ public class CMDList<Type> implements ICMDList<Type> {
     @Override
     public void clear() {
         head = (tail = null);
+        size = 0;
     }
 
     @Override

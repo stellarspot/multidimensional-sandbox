@@ -102,12 +102,16 @@ public class MDWave1Universe extends MDShapeUniverse {
 
         wavesMinus = Arrays.copyOf(waves, N);
         waves = Arrays.copyOf(wavesPlus, N);
+        for (int i = 1; i < N - 1; i++) {
+            wavesPlus[i] = 0;
+        }
 
         for (int i = 1; i < N - 1; i++) {
             evaluateWave(i);
         }
 
         for (DragPoint dragPoint : dragPoints) {
+            System.out.println("Use Dag Point");
             dragPoint.evaluate();
         }
     }
@@ -255,6 +259,7 @@ public class MDWave1Universe extends MDShapeUniverse {
 
         @Override
         public void screenRelease(MDScreenEvent e) {
+            System.out.println("Remove drag points: " + dragPoints.getSize());
             dragPoints.clear();
         }
 
