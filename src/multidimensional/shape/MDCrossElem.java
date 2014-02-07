@@ -14,25 +14,17 @@ import multidimensional.mathematics.ICMDVector;
  *
  * @author stellarspot
  */
-//public class MDCrossElem implements IMDShapeElem {
 public class MDCrossElem extends MDShapeElem {
 
     int dim;
     double d;
-    //ICMDVector[] vertices;
-//    Vertex[] vertices;
-//    ICMDList<Segment> segments = new CMDList<>();
 
     public MDCrossElem(int dim, double d) {
         this.dim = dim;
         this.d = d;
 
         int n = 0;
-        //vertices = new Vertex[2 * dim];
         vectors = new ICMDVector[2 * dim];
-        vertices = new CMDList<>();
-        segments = new CMDList<>();
-
 
         for (int i = 0; i < dim; i++) {
             CMDVector coordinats1 = new CMDVector(dim);
@@ -40,36 +32,36 @@ public class MDCrossElem extends MDShapeElem {
             coordinats1.setElem(i, d);
             coordinats2.setElem(i, -d);
 
-//            vertices[n] = new ShapeVertex(coordinats1);
-//            vertices[n + 1] = new ShapeVertex(coordinats2);
             vectors[n] = coordinats1;
             vectors[n + 1] = coordinats2;
-            vertices.addTail(new ShapeVertex(n), new ShapeVertex(n + 1));
+            //vertices.addTail(new ShapeVertex(n), new ShapeVertex(n + 1));
+            hulls.addTail(new ShapeVertex(n), new ShapeVertex(n + 1));
 
-            segments.addTail(new ShapeSegment(n));
+            //segments.addTail(new ShapeSegment(n));
+            hulls.addTail(new ShapeSegment(n));
             n += 2;
         }
     }
 
-    static class ShapeSegment implements Segment {
+    static class ShapeSegment implements Hull {
 
-        int vertex;
+        int index;
         ICMDProperties properties = new MDShapeProperties();
 
-        public ShapeSegment(int vertex) {
-            this.vertex = vertex;
+        public ShapeSegment(int index) {
+            this.index = index;
         }
 
         @Override
-        public int getVertex1() {
-            return vertex;
+        public HullType getType() {
+            return HullType.SEGMENTS;
         }
 
         @Override
-        public int getVertex2() {
-            return vertex + 1;
+        public int[] getIndices() {
+            return new int[]{index, index + 1};
         }
-
+        
         @Override
         public ICMDProperties getProperties() {
             return properties;

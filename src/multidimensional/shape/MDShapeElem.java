@@ -16,20 +16,17 @@ import multidimensional.mathematics.ICMDVector;
 public class MDShapeElem implements IMDShapeElem {
 
     protected ICMDVector[] vectors;
-    protected ICMDList<Vertex> vertices;
-    protected ICMDList<Segment> segments;
+    protected ICMDList<Hull> hulls;
     protected ICMDProperties properties = new MDShapeProperties();
 
     protected void init(ICMDVector... vectors) {
         this.vectors = vectors;
-        this.vertices = new CMDList<>();
-        this.segments = new CMDList<>();
+        this.hulls = new CMDList<>();
     }
 
     protected void init(int vectorSize) {
         this.vectors = new ICMDVector[vectorSize];
-        this.vertices = new CMDList<>();
-        this.segments = new CMDList<>();
+        this.hulls = new CMDList<>();
     }
 
     @Override
@@ -38,13 +35,8 @@ public class MDShapeElem implements IMDShapeElem {
     }
 
     @Override
-    public ICMDList<Vertex> getVertices() {
-        return vertices;
-    }
-
-    @Override
-    public ICMDList<IMDShapeElem.Segment> getSegments() {
-        return segments;
+    public ICMDList<IMDShapeElem.Hull> getHulls() {
+        return hulls;
     }
 
     @Override
@@ -52,30 +44,25 @@ public class MDShapeElem implements IMDShapeElem {
         return properties;
     }
 
-    public static class ShapeVertex implements Vertex {
+    public static class ShapeHull implements Hull {
 
-        public static final double DEFAULT_RADIUS = 5;
-        double radius;
-        int coordinats;
+        HullType type;
+        int[] indices;
         ICMDProperties properties = new MDShapeProperties();
 
-        public ShapeVertex(int coordinats) {
-            this(DEFAULT_RADIUS, coordinats);
-        }
-
-        public ShapeVertex(double radius, int coordinats) {
-            this.radius = radius;
-            this.coordinats = coordinats;
+        public ShapeHull(HullType type, int... indices) {
+            this.type = type;
+            this.indices = indices;
         }
 
         @Override
-        public double getRadius() {
-            return radius;
+        public HullType getType() {
+            return type;
         }
 
         @Override
-        public int getCoordinats() {
-            return coordinats;
+        public int[] getIndices() {
+            return indices;
         }
 
         @Override
@@ -84,30 +71,24 @@ public class MDShapeElem implements IMDShapeElem {
         }
     }
 
-    public static class ShapeSegment implements Segment {
+    public static class ShapeVertex extends ShapeHull {
 
-        int vertex1;
-        int vertex2;
-        ICMDProperties properties = new MDShapeProperties();
+        public static final double DEFAULT_RADIUS = 5;
+
+        public ShapeVertex(int coordinats) {
+            this(DEFAULT_RADIUS, coordinats);
+        }
+
+        public ShapeVertex(double radius, int index) {
+            super(HullType.VERTICES, index);
+            getProperties().put(MDShapeProperties.Name.RADIUS, radius);
+        }
+    }
+
+    public static class ShapeSegment extends ShapeHull {
 
         public ShapeSegment(int vertex1, int vertex2) {
-            this.vertex1 = vertex1;
-            this.vertex2 = vertex2;
-        }
-
-        @Override
-        public int getVertex1() {
-            return vertex1;
-        }
-
-        @Override
-        public int getVertex2() {
-            return vertex2;
-        }
-
-        @Override
-        public ICMDProperties getProperties() {
-            return properties;
+            super(HullType.SEGMENTS, vertex1, vertex2);
         }
     }
 }

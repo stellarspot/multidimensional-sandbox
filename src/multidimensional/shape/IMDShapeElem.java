@@ -15,25 +15,19 @@ import multidimensional.mathematics.ICMDVector;
 public interface IMDShapeElem {
 
     ICMDVector[] getVectors();
-
-    ICMDList<Vertex> getVertices();
-    ICMDList<Segment> getSegments();
-
+    ICMDList<Hull> getHulls();
     ICMDProperties getProperties();
 
-    interface Vertex {
 
-        double getRadius();
-        int getCoordinats();
-
-        ICMDProperties getProperties();
+    enum HullType{
+        VERTICES,
+        SEGMENTS,
     }
 
-    interface Segment {
+    interface Hull {
 
-        int getVertex1();
-        int getVertex2();
-        
+        HullType getType();
+        int[] getIndices();
         ICMDProperties getProperties();
     }
 }

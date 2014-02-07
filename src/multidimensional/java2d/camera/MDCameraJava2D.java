@@ -89,7 +89,7 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
-            
+
             addKeyListener(new CameraKeyListener());
         }
 
@@ -130,54 +130,77 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
             IMDVector[] vectors = elem.getVectors();
 
-            for (IMDCameraElem.Segment segment : elem.getSegments()) {
-                drawSegment(g, segment, vectors, elem.getProperties());
-            }
-
-            for (IMDCameraElem.Vertex vertex : elem.getVertices()) {
-                drawVertex(g, vertex, vectors, elem.getProperties());
+            for (IMDCameraElem.Hull hulls : elem.getHulls()) {
+                drawHull(g, hulls, vectors, elem.getProperties());
             }
         }
 
-        void drawVertex(Graphics2D g, IMDCameraElem.Vertex vertex,
+        void drawHull(Graphics2D g, IMDCameraElem.Hull hull, IMDVector[] vectors, IMDProperties properties) {
+
+            switch (hull.getType()) {
+                case VERTICES:
+                    drawVertices(g, hull, vectors, properties);
+                    return;
+                case SEGMENTS:
+                    drawSegments(g, hull, vectors, properties);
+                    return;
+
+                default:
+                    throw new RuntimeException("Unknown hull type: " + hull.getType());
+            }
+        }
+
+        void drawVertices(Graphics2D g, IMDCameraElem.Hull hull,
                 IMDVector[] vectors, IMDProperties properties) {
 
-            int r = (int) vertex.getRadius();
-            int r2 = r * 2;
-            IMDVector v = vectors[vertex.getCoordinats()];
+            //int r = (int) hull.getRadius();
+            int[] indices = hull.getIndices();
 
-            int x = getCoordinats(0, v);
-            int y = getCoordinats(1, v);
+            for (int i = 0; i < indices.length; i++) {
 
-            Color color = getColor(properties, vertex.getProperties());
-            boolean fill = getFill(properties, vertex.getProperties());
+                int r = 5;
+                int r2 = r * 2;
+                IMDVector v = vectors[indices[i]];
 
-            g.setColor(color);
-            if (fill) {
-                g.fillOval(x - r, y - r, r2, r2);
-            } else {
-                g.drawOval(x - r, y - r, r2, r2);
+                int x = getCoordinats(0, v);
+                int y = getCoordinats(1, v);
+
+                Color color = getColor(properties, hull.getProperties());
+                boolean fill = getFill(properties, hull.getProperties());
+
+                g.setColor(color);
+                if (fill) {
+                    g.fillOval(x - r, y - r, r2, r2);
+                } else {
+                    g.drawOval(x - r, y - r, r2, r2);
+                }
             }
-
         }
 
-        void drawSegment(Graphics2D g, IMDCameraElem.Segment segment, IMDVector[] vectors, IMDProperties properties) {
+        void drawSegments(Graphics2D g, IMDCameraElem.Hull segment, IMDVector[] vectors, IMDProperties properties) {
 
-            IMDVector v1 = vectors[segment.getVertex1()];
-            IMDVector v2 = vectors[segment.getVertex2()];
-
-            //System.out.println("segment: " + v1 + ", " + v2);
             Color color = getColor(properties, segment.getProperties());
             g.setColor(color);
 
-            int x1 = getCoordinats(0, v1);
-            int y1 = getCoordinats(1, v1);
-            int x2 = getCoordinats(0, v2);
-            int y2 = getCoordinats(1, v2);
+            int i = 0;
 
-            //System.out.printf("x1: %d, y1: %d, x2: %d, y2: %d\n", x1, y1, x2, y2);
+            int[] indices = segment.getIndices();
+            while (i < indices.length) {
 
-            g.drawLine(x1, y1, x2, y2);
+                IMDVector v1 = vectors[indices[i++]];
+                IMDVector v2 = vectors[indices[i++]];
+
+                //System.out.println("segment: " + v1 + ", " + v2);
+
+                int x1 = getCoordinats(0, v1);
+                int y1 = getCoordinats(1, v1);
+                int x2 = getCoordinats(0, v2);
+                int y2 = getCoordinats(1, v2);
+
+                //System.out.printf("x1: %d, y1: %d, x2: %d, y2: %d\n", x1, y1, x2, y2);
+
+                g.drawLine(x1, y1, x2, y2);
+            }
         }
     }
 
@@ -211,8 +234,8 @@ public class MDCameraJava2D implements IMDSwingCamera {
 
         return index < v.getDim() ? (int) v.getElem(index) : 0;
     }
-    
-    class CameraKeyListener extends KeyAdapter{
+
+    class CameraKeyListener extends KeyAdapter {
 
         @Override
         public void keyPressed(KeyEvent e) {
@@ -222,12 +245,12 @@ public class MDCameraJava2D implements IMDSwingCamera {
                 listener.keyPress(event);
             }
         }
-        
-        MDKeyEvent getEvent(KeyEvent e){
+
+        MDKeyEvent getEvent(KeyEvent e) {
             return new MDKeyEvent(e.getKeyChar());
         }
     }
-    
+
     class CameraMouseListener extends MouseAdapter {
 
         @Override

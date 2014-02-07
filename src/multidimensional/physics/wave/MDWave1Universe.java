@@ -154,13 +154,13 @@ public class MDWave1Universe extends MDShapeUniverse {
             double r = 5;
             properties.put(MDShapeProperties.Name.COLOR, MDColor.DARK_GREEN);
             vectors[0] = new CMDVector(0, wavesPlus[0]);
-            IMDShapeElem.Vertex vertex = new MDShapeElem.ShapeVertex(r, 0);
+            IMDShapeElem.Hull vertex = new MDShapeElem.ShapeVertex(r, 0);
             //vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.DARK_GREEN);
-            vertices.addTail(vertex);
+            hulls.addTail(vertex);
             vectors[1] = new CMDVector(length, wavesPlus[N - 1]);
             vertex = new MDShapeElem.ShapeVertex(r, 1);
-            //vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.DARK_GREEN);
-            vertices.addTail(vertex);
+            vertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.DARK_GREEN);
+            hulls.addTail(vertex);
 
         }
     }
@@ -176,8 +176,7 @@ public class MDWave1Universe extends MDShapeUniverse {
             //vectors[0] = new CMDVector(0, wavesPlus[0]);
             for (int i = 0; i < N - 1; i++) {
                 vectors[i] = new CMDVector(i * dx, wavesPlus[i]);
-                //vertices.addTail(new MDShapeElem.ShapeVertex(2.0, i));
-                segments.addTail(new ShapeSegment(i, i + 1));
+                hulls.addTail(new ShapeSegment(i, i + 1));
             }
             vectors[N - 1] = new CMDVector(length, wavesPlus[N - 1]);
         }
@@ -214,17 +213,17 @@ public class MDWave1Universe extends MDShapeUniverse {
             public DragPointShapeElem() {
                 init(new CMDVector(x, waves[index]), new CMDVector(x, y));
 
-                Vertex waveVertex = new ShapeVertex(10, 0);
+                Hull waveVertex = new ShapeVertex(10, 0);
                 waveVertex.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.RED);
                 waveVertex.getProperties().put(MDShapeProperties.Name.FILL, Boolean.FALSE);
 
-                Vertex dragVertex = new ShapeVertex(5, 1);
-                Segment segment = new ShapeSegment(0, 1);
+                Hull dragVertex = new ShapeVertex(5, 1);
+                Hull segment = new ShapeSegment(0, 1);
                 segment.getProperties().put(MDShapeProperties.Name.COLOR, MDColor.RED);
 
-                getVertices().addTail(waveVertex);
-                getVertices().addTail(dragVertex);
-                getSegments().addTail(segment);
+                getHulls().addTail(waveVertex);
+                getHulls().addTail(dragVertex);
+                getHulls().addTail(segment);
             }
         }
     }

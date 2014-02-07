@@ -51,10 +51,8 @@ public class MDShapeUniverse implements IMDShapeUniverse {
 
     @Override
     public void evaluate() {
-        //System.out.println("Evaluate");
         cameraElems.clear();
-        //shapeElems.clear();
-
+        
         IMDStack<ICMDList<IMDTransform>> transformsStack = new MDStack<ICMDList<IMDTransform>>();
         parse(root, transformsStack);
 
@@ -84,47 +82,29 @@ public class MDShapeUniverse implements IMDShapeUniverse {
 
         IMDShapeElem shapeElem;
         IMDVector[] cameraVectors;
-        IMDList<IMDCameraElem.Vertex> cameraVertices;
-        IMDList<IMDCameraElem.Segment> cameraSegments;
+        IMDList<IMDCameraElem.Hull> cameraHulls;
 
         public MDCameraElem(IMDShapeElem shapeElem, IMDStack<ICMDList<IMDTransform>> transformsStack) {
             this.shapeElem = shapeElem;
 
-            //IMDShapeElem.Vertex[] vertices = shapeElem.getVertices();
             ICMDVector[] vectors = shapeElem.getVectors();
 
-            //cameraVertices = new IMDCameraElem.Vertex[vectors.length];
             cameraVectors = new IMDVector[vectors.length];
 
             for (int i = 0; i < vectors.length; i++) {
                 cameraVectors[i] = parseVertex(vectors[i].getIMDVector(), transformsStack);
             }
 
-            ICMDList<IMDCameraElem.Vertex> v = new CMDList<>();
+            ICMDList<IMDCameraElem.Hull> h = new CMDList<>();
 
-            for (IMDShapeElem.Vertex vertex : shapeElem.getVertices()) {
-                v.addTail(new CameraVertex(vertex));
+            for (IMDShapeElem.Hull hull : shapeElem.getHulls()) {
+                h.addTail(new CameraVertex(hull));
             }
 
-            ICMDList<IMDCameraElem.Segment> s = new CMDList<>();
-
-            for (IMDShapeElem.Segment segment : shapeElem.getSegments()) {
-                s.addTail(new CameraSegment(segment));
-            }
-
-            cameraVertices = v.getIMDList();
-            cameraSegments = s.getIMDList();
+            cameraHulls = h.getIMDList();
         }
 
         protected IMDVector parseVertex(IMDVector vector, IMDStack<ICMDList<IMDTransform>> transformsStack) {
-
-//            if (vertex == null || vertex.getCoordinats() == null) {
-//                System.out.println("VERTEX: " + vertex);
-//            }
-
-//            if (vertex == null) {
-//                return;
-//            }
 
             IMDVector coordinats = vector;
             for (ICMDList<IMDTransform> transforms : transformsStack) {
@@ -142,70 +122,39 @@ public class MDShapeUniverse implements IMDShapeUniverse {
         }
 
         @Override
-        public IMDList<IMDCameraElem.Vertex> getVertices() {
-            return cameraVertices;
-        }
-
-        @Override
-        public IMDList<IMDCameraElem.Segment> getSegments() {
-            return cameraSegments;
-        }
-
-        @Override
         public IMDProperties getProperties() {
             return shapeElem.getProperties().getIMDProperties();
         }
-        
-        static class CameraVertex implements IMDCameraElem.Vertex {
 
-            double radius;
-            int coordinats;
-            IMDProperties properties;
-
-            public CameraVertex(IMDShapeElem.Vertex vertex) {
-                this.radius = vertex.getRadius();
-                this.coordinats = vertex.getCoordinats();
-                this.properties = vertex.getProperties().getIMDProperties();
-            }
-
-            public double getRadius() {
-                return radius;
-            }
-
-            public int getCoordinats() {
-                return coordinats;
-            }
-
-            public IMDProperties getProperties() {
-                return properties;
-            }
-
+        @Override
+        public IMDList<Hull> getHulls() {
+            return cameraHulls;
         }
 
-        static class CameraSegment implements IMDCameraElem.Segment {
+        static class CameraVertex implements IMDCameraElem.Hull {
 
-            int vertex1;
-            int vertex2;
+            IMDShapeElem.HullType type;
+            int[] indices;
             IMDProperties properties;
 
-            public CameraSegment(IMDShapeElem.Segment segment) {
-                vertex1 = segment.getVertex1();
-                vertex2 = segment.getVertex2();
-                this.properties = segment.getProperties().getIMDProperties();
-            }
-
-            @Override
-            public int getVertex1() {
-                return vertex1;
-            }
-
-            @Override
-            public int getVertex2() {
-                return vertex2;
+            public CameraVertex(IMDShapeElem.Hull hull) {
+                this.type = hull.getType();
+                this.indices = hull.getIndices(); // Copy Elements!!
+                this.properties = hull.getProperties().getIMDProperties();
             }
 
             public IMDProperties getProperties() {
                 return properties;
+            }
+
+            @Override
+            public IMDShapeElem.HullType getType() {
+                return type;
+            }
+
+            @Override
+            public int[] getIndices() {
+                return indices;
             }
         }
     }

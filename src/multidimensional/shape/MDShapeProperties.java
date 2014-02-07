@@ -64,6 +64,7 @@ public class MDShapeProperties implements ICMDProperties {
 
     public enum Name implements IMDName {
 
+        RADIUS,
         COLOR,
         FILL,
     }

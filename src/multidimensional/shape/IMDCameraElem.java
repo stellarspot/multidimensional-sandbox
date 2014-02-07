@@ -14,26 +14,14 @@ import multidimensional.mathematics.IMDVector;
  */
 public interface IMDCameraElem {
 
-    //Vertex[] getVertices();
     IMDVector[] getVectors();
-    IMDList<Vertex> getVertices();
-    IMDList<Segment> getSegments();
-    
-    IMDProperties getProperties();    
+    IMDList<Hull> getHulls();
+    IMDProperties getProperties();
 
-    public static interface Vertex {
+    public static interface Hull {
 
-        double getRadius();
-        int getCoordinats();
-
-        IMDProperties getProperties();
-    }
-
-    public static interface Segment {
-
-        int getVertex1();
-        int getVertex2();
-
+        IMDShapeElem.HullType getType();
+        int[] getIndices();
         IMDProperties getProperties();
     }
 }

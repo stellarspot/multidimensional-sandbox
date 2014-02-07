@@ -140,7 +140,7 @@ public class MDRelativityLattice {
             this.particle = particle;
             init(particle.getCoordinats());
             //vectors[0] = particle.getCoordinats();
-            vertices.addTail(new MDShapeElem.ShapeVertex(particle.getRadius(), 0));
+            hulls.addTail(new MDShapeElem.ShapeVertex(particle.getRadius(), 0));
         }
     }
 
@@ -151,8 +151,7 @@ public class MDRelativityLattice {
             //System.out.println("size: " + size + ", nx: " + Nx + ", ny: " + Ny);
 
             vectors = new ICMDVector[size];
-            segments = new CMDList<>();
-            vertices = new CMDList<>();
+            hulls = new CMDList<>();
 
             int n = 0;
 
@@ -181,9 +180,9 @@ public class MDRelativityLattice {
                     vectors[n] = begin;
                     vectors[n + 1] = end;
 
-                    vertices.addTail(new ShapeVertex(1.0, n), new ShapeVertex(2.0, n + 1));
+                    hulls.addTail(new ShapeVertex(1.0, n), new ShapeVertex(2.0, n + 1));
 
-                    segments.addTail(new ShapeSegment(n, n + 1));
+                    hulls.addTail(new ShapeSegment(n, n + 1));
 
                     n += 2;
                 }
