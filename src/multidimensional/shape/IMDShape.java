@@ -15,7 +15,6 @@ public interface IMDShape {
 
     ICMDList<IMDShape> getShapes();
     ICMDList<IMDShapeElem> getElems();
-    //ICMDList<IMDShapeSegment> getSegments();
 
     ICMDList<IMDTransform> getTransforms();
 

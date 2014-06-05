@@ -4,11 +4,8 @@
  */
 package multidimensional.shape;
 
-import multidimensional.datatype.CMDList;
-import multidimensional.datatype.ICMDList;
 import multidimensional.datatype.ICMDProperties;
 import multidimensional.mathematics.CMDVector;
-import multidimensional.mathematics.ICMDVector;
 
 /**
  *
@@ -24,7 +21,7 @@ public class MDCrossElem extends MDShapeElem {
         this.d = d;
 
         int n = 0;
-        vectors = new ICMDVector[2 * dim];
+        init(2 * dim);
 
         for (int i = 0; i < dim; i++) {
             CMDVector coordinats1 = new CMDVector(dim);
@@ -34,10 +31,7 @@ public class MDCrossElem extends MDShapeElem {
 
             vectors[n] = coordinats1;
             vectors[n + 1] = coordinats2;
-            //vertices.addTail(new ShapeVertex(n), new ShapeVertex(n + 1));
             hulls.addTail(new ShapeVertex(n), new ShapeVertex(n + 1));
-
-            //segments.addTail(new ShapeSegment(n));
             hulls.addTail(new ShapeSegment(n));
             n += 2;
         }
@@ -61,7 +55,7 @@ public class MDCrossElem extends MDShapeElem {
         public int[] getIndices() {
             return new int[]{index, index + 1};
         }
-        
+
         @Override
         public ICMDProperties getProperties() {
             return properties;
