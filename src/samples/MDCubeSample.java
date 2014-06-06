@@ -14,7 +14,7 @@ import multidimensional.shape.MDShapeUniverse;
  *
  * @author stellarspot
  */
-public class CubeSample {
+public class MDCubeSample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 

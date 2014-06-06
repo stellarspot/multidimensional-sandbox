@@ -6,24 +6,24 @@ package samples;
 
 import javax.swing.SwingUtilities;
 import multidimensional.java2d.camera.MDFrameJava2D;
-import multidimensional.shape.MDCrossElem;
 import multidimensional.shape.MDShape;
 import multidimensional.shape.MDShapeUniverse;
+import multidimensional.shape.MDSphereElem;
 
 /**
  *
  * @author stellarspot
  */
-public class CrossSample {
+public class MDSphereSample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
                 int dimension = 4;
-                MDCrossElem crossElem = new MDCrossElem(dimension, 300);
+                MDSphereElem sphereElem = new MDSphereElem(dimension, 400, 14);
                 MDShape crossShape = new MDShape();
-                crossShape.getElems().addTail(crossElem);
+                crossShape.getElems().addTail(sphereElem);
 
                 MDShapeUniverse universe = new MDShapeUniverse(dimension);
                 universe.setShape(crossShape);
@@ -32,7 +32,6 @@ public class CrossSample {
                 frameJava2D.setVisible(true);
                 frameJava2D.addCameraRotationTransforms();
                 frameJava2D.animate();
-
             }
         });
     }
